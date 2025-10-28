@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import { Box, TextField, Button, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 
@@ -6,26 +6,12 @@ import { motion } from 'framer-motion';
  * Componente para preguntas de rellenar huecos
  * Muestra la pregunta con campos de texto para rellenar
  * Soporta Enter para confirmar la respuesta
- * El primer campo tiene foco automático
  */
 const FillBlanks = ({ question, onAnswer, disabled = false }) => {
   const [answers, setAnswers] = useState(
     Array(question.blanks?.length || 1).fill('')
   );
   const [submitted, setSubmitted] = useState(false);
-  const firstInputRef = useRef(null);
-
-  /**
-   * Enfoca automáticamente el primer campo al montar el componente
-   */
-  useEffect(() => {
-    if (firstInputRef.current && !disabled && !submitted) {
-      // Pequeño delay para asegurar que el componente está completamente renderizado
-      setTimeout(() => {
-        firstInputRef.current?.focus();
-      }, 100);
-    }
-  }, [disabled, submitted]);
 
   /**
    * Maneja el cambio en un campo de respuesta
@@ -106,9 +92,8 @@ const FillBlanks = ({ question, onAnswer, disabled = false }) => {
                 onChange={(e) => handleAnswerChange(index, e.target.value)}
                 onKeyPress={handleKeyPress}
                 disabled={disabled || submitted}
-                placeholder={`Respuesta ${index + 1}`}
+                placeholder={"Respuesta..."}
                 variant="outlined"
-                inputRef={index === 0 ? firstInputRef : null}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     borderRadius: 2,
@@ -154,7 +139,6 @@ const FillBlanks = ({ question, onAnswer, disabled = false }) => {
                 disabled={disabled || submitted}
                 placeholder="..."
                 variant="standard"
-                inputRef={currentBlankIndex === 0 ? firstInputRef : null}
                 sx={{
                   width: 150,
                   '& .MuiInput-root': {
@@ -230,9 +214,10 @@ const FillBlanks = ({ question, onAnswer, disabled = false }) => {
                 px: 6,
                 fontSize: '1.1rem',
                 fontWeight: 600,
-                borderRadius: 3,
+                borderRadius: 2,
                 textTransform: 'none',
                 backgroundColor: 'primary.main',
+                color: 'white',
                 '&:hover': {
                   backgroundColor: 'primary.dark',
                   transform: 'translateY(-2px)',

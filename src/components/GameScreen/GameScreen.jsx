@@ -102,7 +102,7 @@ const GameScreen = () => {
               <Box
                 sx={{
                   backgroundColor: 'background.paper',
-                  borderRadius: 3,
+                  borderRadius: 2,
                   p: 4,
                   boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
                 }}

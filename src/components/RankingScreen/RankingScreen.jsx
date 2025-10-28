@@ -95,7 +95,7 @@ const RankingScreen = ({ ranking, topicTitle = 'Tema', highlightId = null }) => 
           <Paper
             elevation={8}
             sx={{
-              borderRadius: 4,
+              borderRadius: 2,
               overflow: 'hidden',
             }}
           >

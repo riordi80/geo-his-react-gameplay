@@ -6,6 +6,7 @@ import {
   closestCorners,
   KeyboardSensor,
   PointerSensor,
+  TouchSensor,
   useSensor,
   useSensors,
   DragOverlay,
@@ -48,6 +49,7 @@ const DraggableItem = ({ id, value, disabled }) => {
       sx={{
         cursor: disabled ? 'default' : 'grab',
         userSelect: 'none',
+        touchAction: 'none', // Previene el scroll en móvil durante el drag
         fontSize: '0.95rem',
         fontWeight: 600,
         py: 2.5,
@@ -155,7 +157,17 @@ const Classify = ({ question, onAnswer, disabled = false }) => {
   const [submitted, setSubmitted] = useState(false);
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // El drag se activa después de mover 8px
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 200, // 200ms de delay antes de activar el drag
+        tolerance: 5, // Permite 5px de movimiento durante el delay
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
@@ -417,9 +429,10 @@ const Classify = ({ question, onAnswer, disabled = false }) => {
                 px: 6,
                 fontSize: '1.1rem',
                 fontWeight: 600,
-                borderRadius: 3,
+                borderRadius: 2,
                 textTransform: 'none',
                 backgroundColor: 'primary.main',
+                color: 'white',
                 '&:hover': {
                   backgroundColor: 'primary.dark',
                   transform: 'translateY(-2px)',

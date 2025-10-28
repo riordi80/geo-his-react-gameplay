@@ -184,7 +184,7 @@ export const tema2Questions = [
     id: 'tema2-q13',
     type: 'fillBlanks',
     difficulty: 'medium',
-    question: 'La _______ es el proceso por el cual los materiales son arrastrados después de la erosión.',
+    question: 'El _______ es el proceso por el cual los materiales son arrastrados después de la erosión.',
     blanks: ['transporte'],
     correctAnswers: ['transporte'],
     explanation: 'El transporte arrastra los fragmentos arrancados por la erosión. Luego, estos materiales son sedimentados en otros lugares.',

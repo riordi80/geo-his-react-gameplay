@@ -6,6 +6,7 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import { AvatarIcon } from '../../data/avatars';
 import { saveRanking, getRankPosition } from '../../services/storage';
 import { useGame } from '../../context/GameContext';
+import { useSound } from '../../hooks/useSound';
 
 /**
  * Pantalla de resultados finales del juego
@@ -14,6 +15,7 @@ import { useGame } from '../../context/GameContext';
 const ResultsScreen = ({ score, player, onPlayAgain, onExit }) => {
   const { correct, total, percentage, stars } = score;
   const { maxStreak } = useGame();
+  const { playClick, playVictoryMusic, stopVictoryMusic } = useSound();
   const [rankPosition, setRankPosition] = useState(null);
 
   // Guardar resultado en localStorage al montar el componente
@@ -38,6 +40,16 @@ const ResultsScreen = ({ score, player, onPlayAgain, onExit }) => {
       setRankPosition(position);
     }
   }, [player, percentage, correct, total, stars, maxStreak]);
+
+  // Reproducir música de victoria al montar y detenerla al desmontar
+  useEffect(() => {
+    playVictoryMusic();
+
+    // Cleanup: detener música cuando el componente se desmonte
+    return () => {
+      stopVictoryMusic();
+    };
+  }, [playVictoryMusic, stopVictoryMusic]);
 
   /**
    * Obtiene el mensaje motivador según el porcentaje
@@ -70,13 +82,31 @@ const ResultsScreen = ({ score, player, onPlayAgain, onExit }) => {
     }
   };
 
+  /**
+   * Manejar click en "Jugar de nuevo"
+   */
+  const handlePlayAgain = () => {
+    playClick();
+    stopVictoryMusic();
+    onPlayAgain();
+  };
+
+  /**
+   * Manejar click en "Salir"
+   */
+  const handleExit = () => {
+    playClick();
+    stopVictoryMusic();
+    onExit();
+  };
+
   const motivationalMessage = getMotivationalMessage();
 
   return (
     <Box
       className="min-h-screen flex items-center justify-center"
       sx={{
-        background: 'linear-gradient(135deg, #FFE66D 0%, #4ECDC4 50%, #FF6B6B 100%)',
+        background: 'linear-gradient(135deg, #FFE66D 0%, #4ECDC4 100%)',
         py: 4,
       }}
     >
@@ -94,7 +124,7 @@ const ResultsScreen = ({ score, player, onPlayAgain, onExit }) => {
             elevation={12}
             sx={{
               p: 5,
-              borderRadius: 4,
+              borderRadius: 2,
               textAlign: 'center',
             }}
           >
@@ -212,55 +242,164 @@ const ResultsScreen = ({ score, player, onPlayAgain, onExit }) => {
               </Box>
             </motion.div>
 
-            {/* Puntuación */}
+            {/* Estadísticas en tarjetas */}
             <motion.div
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.8 }}
             >
-              <Paper
-                elevation={0}
+              <Box
                 sx={{
-                  p: 3,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 2,
                   mb: 4,
-                  backgroundColor: 'background.default',
-                  borderRadius: 3,
                 }}
               >
-                <Typography
-                  variant="h2"
+                {/* Puntuación principal */}
+                <Paper
+                  elevation={3}
                   sx={{
-                    fontWeight: 700,
-                    color: 'primary.main',
-                    mb: 1,
+                    p: 3,
+                    backgroundColor: '#FFF9F0',
+                    borderRadius: 2,
+                    textAlign: 'center',
                   }}
                 >
-                  {percentage}%
-                </Typography>
-                <Typography
-                  variant="h6"
-                  sx={{
-                    color: 'text.secondary',
-                    fontWeight: 500,
-                  }}
-                >
-                  {correct} de {total} respuestas correctas
-                </Typography>
-
-                {/* Posición en el ranking */}
-                {rankPosition && rankPosition <= 10 && (
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: 'text.secondary',
+                      fontWeight: 600,
+                      mb: 1,
+                      textTransform: 'uppercase',
+                      letterSpacing: 1,
+                    }}
+                  >
+                    Tu puntuación
+                  </Typography>
+                  <Typography
+                    variant="h2"
+                    sx={{
+                      fontWeight: 700,
+                      color: 'text.primary',
+                      mb: 0.5,
+                    }}
+                  >
+                    {percentage}%
+                  </Typography>
                   <Typography
                     variant="body1"
                     sx={{
-                      mt: 2,
-                      color: 'secondary.main',
-                      fontWeight: 600,
+                      color: 'text.secondary',
+                      fontWeight: 500,
                     }}
                   >
-                    🏆 ¡Posición #{rankPosition} en el ranking!
+                    {correct} de {total} respuestas correctas
                   </Typography>
-                )}
-              </Paper>
+                </Paper>
+
+                {/* Fila de métricas adicionales */}
+                <Box
+                  sx={{
+                    display: 'grid',
+                    gridTemplateColumns: maxStreak > 0 && rankPosition && rankPosition <= 10
+                      ? 'repeat(2, 1fr)'
+                      : '1fr',
+                    gap: 2,
+                  }}
+                >
+                  {/* Racha máxima */}
+                  {maxStreak > 0 && (
+                    <Paper
+                      elevation={3}
+                      sx={{
+                        p: 3,
+                        backgroundColor: '#FFF9F0',
+                        borderRadius: 2,
+                        textAlign: 'center',
+                      }}
+                    >
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: 'text.secondary',
+                          fontWeight: 600,
+                          mb: 1,
+                          textTransform: 'uppercase',
+                          letterSpacing: 1,
+                        }}
+                      >
+                        Racha máxima
+                      </Typography>
+                      <Typography
+                        variant="h2"
+                        sx={{
+                          fontWeight: 700,
+                          color: 'text.primary',
+                          mb: 0.5,
+                        }}
+                      >
+                        🔥 {maxStreak}
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          color: 'text.secondary',
+                          fontWeight: 500,
+                        }}
+                      >
+                        {maxStreak === 1 ? 'acierto seguido' : 'aciertos seguidos'}
+                      </Typography>
+                    </Paper>
+                  )}
+
+                  {/* Posición en el ranking */}
+                  {rankPosition && rankPosition <= 10 && (
+                    <Paper
+                      elevation={3}
+                      sx={{
+                        p: 3,
+                        backgroundColor: '#FFF9F0',
+                        borderRadius: 2,
+                        textAlign: 'center',
+                      }}
+                    >
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: 'text.secondary',
+                          fontWeight: 600,
+                          mb: 1,
+                          textTransform: 'uppercase',
+                          letterSpacing: 1,
+                        }}
+                      >
+                        En el ranking
+                      </Typography>
+                      <Typography
+                        variant="h2"
+                        sx={{
+                          fontWeight: 700,
+                          color: 'text.primary',
+                          mb: 0.5,
+                        }}
+                      >
+                        🏆 #{rankPosition}
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          color: 'text.secondary',
+                          fontWeight: 500,
+                        }}
+                      >
+                        Top 10 del tema
+                      </Typography>
+                    </Paper>
+                  )}
+                </Box>
+              </Box>
             </motion.div>
 
             {/* Botones de acción */}
@@ -281,17 +420,16 @@ const ResultsScreen = ({ score, player, onPlayAgain, onExit }) => {
                   fullWidth
                   variant="contained"
                   size="large"
-                  onClick={onPlayAgain}
+                  onClick={handlePlayAgain}
+                  color="primary"
                   sx={{
                     py: 2,
                     fontSize: '1.1rem',
                     fontWeight: 600,
-                    borderRadius: 3,
+                    borderRadius: 2,
                     textTransform: 'none',
-                    background: 'linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%)',
                     color: 'white',
                     '&:hover': {
-                      background: 'linear-gradient(135deg, #FF6B6B 20%, #4ECDC4 120%)',
                       transform: 'translateY(-2px)',
                       boxShadow: '0 6px 20px rgba(255,107,107,0.4)',
                     },
@@ -311,12 +449,12 @@ const ResultsScreen = ({ score, player, onPlayAgain, onExit }) => {
                   fullWidth
                   variant="outlined"
                   size="large"
-                  onClick={onExit}
+                  onClick={handleExit}
                   sx={{
-                    py: 2,
+                    py: 'calc(1rem - 2px)',
                     fontSize: '1.1rem',
                     fontWeight: 600,
-                    borderRadius: 3,
+                    borderRadius: 2,
                     textTransform: 'none',
                     borderWidth: 2,
                     borderColor: 'primary.main',

@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useGame, GAME_STATES } from '../../context/GameContext';
 import avatars, { AvatarIcon } from '../../data/avatars';
 import { tema2Questions } from '../../data/questions/tema2-relieve-terrestre';
+import { useSound } from '../../hooks/useSound';
 
 /**
  * Pantalla de configuración del jugador
@@ -11,6 +12,7 @@ import { tema2Questions } from '../../data/questions/tema2-relieve-terrestre';
  */
 const PlayerConfigScreen = () => {
   const { configurePlayer, startGame, setGameState } = useGame();
+  const { playClick } = useSound();
   const [initials, setInitials] = useState('');
   const [selectedAvatar, setSelectedAvatar] = useState(null);
   const [error, setError] = useState('');
@@ -48,7 +50,8 @@ const PlayerConfigScreen = () => {
       return;
     }
 
-    // Configurar jugador y empezar el juego
+    // Reproducir sonido y configurar jugador
+    playClick();
     configurePlayer(initials, selectedAvatar);
     startGame(tema2Questions);
   };
@@ -70,7 +73,7 @@ const PlayerConfigScreen = () => {
           <Card
             sx={{
               p: 4,
-              borderRadius: 4,
+              borderRadius: 2,
               boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
             }}
           >
@@ -225,15 +228,15 @@ const PlayerConfigScreen = () => {
               size="large"
               onClick={handleStartGame}
               disabled={initials.length < 2 || !selectedAvatar}
+              color="primary"
               sx={{
                 py: 1.5,
                 fontSize: '1.1rem',
                 fontWeight: 600,
-                borderRadius: 3,
+                borderRadius: 2,
                 textTransform: 'none',
-                background: 'linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%)',
+                color: 'white',
                 '&:hover': {
-                  background: 'linear-gradient(135deg, #FF6B6B 20%, #4ECDC4 120%)',
                   transform: 'translateY(-2px)',
                   boxShadow: '0 6px 20px rgba(255,107,107,0.4)',
                 },
@@ -244,7 +247,7 @@ const PlayerConfigScreen = () => {
                 transition: 'all 0.3s ease',
               }}
             >
-              ¡Empezar a jugar! 🚀
+              Empezar a jugar
             </Button>
           </Card>
         </motion.div>

@@ -72,7 +72,7 @@ const TrueFalse = ({ question, onAnswer, disabled = false }) => {
             disabled={disabled}
             sx={{
               py: 4,
-              borderRadius: 4,
+              borderRadius: 2,
               border: selectedOption === true ? 'none' : '3px solid #95E1D3',
               backgroundColor:
                 selectedOption === true ? 'success.main' : 'background.paper',
@@ -130,7 +130,7 @@ const TrueFalse = ({ question, onAnswer, disabled = false }) => {
             disabled={disabled}
             sx={{
               py: 4,
-              borderRadius: 4,
+              borderRadius: 2,
               border: selectedOption === false ? 'none' : '3px solid #FF6B9D',
               backgroundColor:
                 selectedOption === false ? 'error.main' : 'background.paper',

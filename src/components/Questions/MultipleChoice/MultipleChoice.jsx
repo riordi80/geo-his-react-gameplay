@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 
@@ -10,14 +10,34 @@ const MultipleChoice = ({ question, onAnswer, disabled = false }) => {
   const [selectedOption, setSelectedOption] = useState(null);
 
   /**
+   * Baraja las opciones aleatoriamente y guarda el mapeo al índice original
+   */
+  const shuffledOptions = useMemo(() => {
+    const optionsWithIndex = question.options.map((option, index) => ({
+      text: option,
+      originalIndex: index,
+    }));
+
+    // Algoritmo Fisher-Yates para barajar
+    const shuffled = [...optionsWithIndex];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+
+    return shuffled;
+  }, [question.id, question.options]); // Solo baraja cuando cambia la pregunta
+
+  /**
    * Maneja la selección de una opción
    */
-  const handleOptionSelect = (optionIndex) => {
+  const handleOptionSelect = (shuffledIndex) => {
     if (disabled) return;
 
-    setSelectedOption(optionIndex);
-    const isCorrect = optionIndex === question.correctAnswer;
-    onAnswer(optionIndex, isCorrect);
+    const originalIndex = shuffledOptions[shuffledIndex].originalIndex;
+    setSelectedOption(shuffledIndex);
+    const isCorrect = originalIndex === question.correctAnswer;
+    onAnswer(originalIndex, isCorrect);
   };
 
   return (
@@ -44,13 +64,13 @@ const MultipleChoice = ({ question, onAnswer, disabled = false }) => {
           gap: 2,
         }}
       >
-        {question.options.map((option, index) => {
+        {shuffledOptions.map((option, index) => {
           const isSelected = selectedOption === index;
           const letter = String.fromCharCode(65 + index); // A, B, C, D
 
           return (
             <motion.div
-              key={index}
+              key={`${question.id}-${index}`}
               whileHover={!disabled ? { scale: 1.02 } : {}}
               whileTap={!disabled ? { scale: 0.98 } : {}}
             >
@@ -64,7 +84,7 @@ const MultipleChoice = ({ question, onAnswer, disabled = false }) => {
                   px: 3,
                   justifyContent: 'flex-start',
                   textAlign: 'left',
-                  borderRadius: 3,
+                  borderRadius: 2,
                   border: isSelected ? 'none' : '2px solid #E0E0E0',
                   backgroundColor: isSelected
                     ? 'primary.main'
@@ -125,7 +145,7 @@ const MultipleChoice = ({ question, onAnswer, disabled = false }) => {
                       flex: 1,
                     }}
                   >
-                    {option}
+                    {option.text}
                   </Typography>
                 </Box>
               </Button>
