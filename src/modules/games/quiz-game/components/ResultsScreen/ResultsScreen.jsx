@@ -3,10 +3,10 @@ import { Box, Button, Typography, Paper, Container } from '@mui/material';
 import { motion } from 'framer-motion';
 import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
-import { AvatarIcon } from '../../data/avatars';
-import { saveRanking, getRankPosition } from '../../services/storage';
+import { AvatarIcon } from '@data/avatars';
+import { saveRanking, getRankPosition } from '@shared/services';
 import { useGame } from '../../context/GameContext';
-import { useSound } from '../../hooks/useSound';
+import { useSound } from '@shared/hooks';
 
 /**
  * Pantalla de resultados finales del juego
@@ -284,6 +284,7 @@ const ResultsScreen = ({ score, player, onPlayAgain, onExit }) => {
                       fontWeight: 700,
                       color: 'text.primary',
                       mb: 0.5,
+                      whiteSpace: 'nowrap',
                     }}
                   >
                     {percentage}%
@@ -338,6 +339,7 @@ const ResultsScreen = ({ score, player, onPlayAgain, onExit }) => {
                           fontWeight: 700,
                           color: 'text.primary',
                           mb: 0.5,
+                          whiteSpace: 'nowrap',
                         }}
                       >
                         🔥 {maxStreak}
@@ -383,6 +385,7 @@ const ResultsScreen = ({ score, player, onPlayAgain, onExit }) => {
                           fontWeight: 700,
                           color: 'text.primary',
                           mb: 0.5,
+                          whiteSpace: 'nowrap',
                         }}
                       >
                         🏆 #{rankPosition}

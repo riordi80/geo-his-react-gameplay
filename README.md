@@ -101,46 +101,74 @@ npm run lint         # Run ESLint
 
 ## Project Structure
 
+The project uses a **modular architecture** for scalability:
+
 ```
 learngaming/
 ├── docs/                        # Project documentation
-│   ├── PROJECT_PLAN.md         # Complete project plan
-│   ├── DEVELOPMENT_GUIDE.md    # Step-by-step development guide
-│   └── contenido/              # Educational materials
+│   ├── README.md               # 📚 Documentation index
+│   ├── STRUCTURE.md            # ⭐ Current structure (START HERE)
+│   ├── ARCHITECTURE.md         # 🏗️ Architecture guide
+│   ├── MIGRATION_COMPLETED.md  # 🔄 Migration summary
+│   ├── PROJECT_PLAN.md         # 📋 Original plan (historical)
+│   ├── DEVELOPMENT_GUIDE.md    # 🛠️ Dev guide (historical)
+│   └── contenido/              # Educational materials (PDFs)
 │
 ├── public/                      # Static files
-│   ├── sounds/                 # Sound effects (future)
-│   └── avatars/                # Avatar images (future)
 │
 ├── src/
-│   ├── components/             # React components
-│   │   ├── FeedbackScreen/    # Feedback screen
-│   │   ├── GameScreen/        # Main game screen
-│   │   ├── PlayerConfigScreen/ # Player configuration
-│   │   ├── ProgressBar/       # Progress bar
-│   │   ├── Questions/         # Question types
-│   │   ├── RankingScreen/     # Leaderboard
-│   │   └── ResultsScreen/     # Results screen
+│   ├── modules/                # 🎮 Independent modules
+│   │   ├── games/
+│   │   │   └── quiz-game/      # Quiz game (self-contained)
+│   │   │       ├── components/ # All quiz components
+│   │   │       ├── context/    # Game state
+│   │   │       ├── data/       # Questions bank
+│   │   │       └── index.js    # Barrel export
+│   │   │
+│   │   └── platform/           # 🏫 Educational platform (future)
+│   │       ├── navigation/
+│   │       ├── topic-hub/
+│   │       └── layout/
 │   │
-│   ├── context/               # Context API
-│   │   └── GameContext.jsx   # Global game state
+│   ├── shared/                 # 🔧 Shared resources
+│   │   ├── hooks/              # useSound
+│   │   ├── services/           # storage
+│   │   ├── components/         # UI components (future)
+│   │   └── index.js            # Barrel export
 │   │
-│   ├── data/                  # Application data
-│   │   ├── avatars.jsx       # Avatar configuration
-│   │   └── questions/        # Question banks per topic
+│   ├── data/                   # 📚 Global data
+│   │   ├── avatars.jsx         # Avatar configuration
+│   │   ├── courses/            # Course config
+│   │   ├── subjects/           # Subject config
+│   │   └── topics/             # Topic config
 │   │
-│   ├── services/              # Services
-│   │   └── storage.js        # localStorage management
-│   │
-│   ├── App.jsx               # Main component
-│   ├── main.jsx              # Entry point
-│   └── theme.js              # Custom MUI theme
+│   ├── App.jsx                 # Main component
+│   ├── main.jsx                # Entry point
+│   └── theme.js                # Custom MUI theme
 │
 ├── .gitignore
 ├── package.json
-├── vite.config.js
+├── vite.config.js              # With path aliases configured
 ├── tailwind.config.js
 └── README.md
+```
+
+### Path Aliases
+
+The project uses clean imports with path aliases:
+
+```javascript
+// Import complete game module
+import { GameProvider, PlayerConfigScreen } from '@modules/games/quiz-game';
+
+// Import shared hooks
+import { useSound } from '@shared/hooks';
+
+// Import shared services
+import { saveRanking } from '@shared/services';
+
+// Import global data
+import avatars from '@data/avatars';
 ```
 
 ## How to Play
@@ -239,23 +267,40 @@ Questions are located in `src/data/questions/`. Each question must follow this s
 }
 ```
 
+## Current Status
+
+- ✅ **Sound system** - Complete with Web Audio API
+- ✅ **Modular architecture** - Scalable and maintainable
+- ✅ **5 question types** - Fully implemented
+- ✅ **Scoring system** - With stars and streaks
+- ✅ **Local rankings** - Persistent storage
+- ✅ **Responsive design** - Mobile First
+
 ## Future Features
 
-- [ ] Sound system and audio effects
 - [ ] Confetti animation for high scores
 - [ ] Complete Netflix-style navigation
 - [ ] Topic hub with theory, diagrams, and videos
 - [ ] Multiple topics and subjects
+- [ ] More game types (memory, puzzles, etc.)
 - [ ] Local multiplayer mode
 - [ ] Achievement and badge system
 - [ ] Dark mode
+- [ ] Backend integration
 
 ## Additional Documentation
 
-For more information about the project, check:
+📚 For detailed information about the project:
 
-- `docs/PROJECT_PLAN.md` - Complete plan with architecture and design
-- `docs/DEVELOPMENT_GUIDE.md` - Step-by-step development guide
+### Start Here
+- **`docs/README.md`** - Documentation index and navigation guide
+- **`docs/STRUCTURE.md`** - ⭐ Current structure (RECOMMENDED)
+- **`docs/ARCHITECTURE.md`** - How to add new games and scale
+
+### Reference
+- **`docs/MIGRATION_COMPLETED.md`** - Summary of architecture migration
+- **`docs/PROJECT_PLAN.md`** - Original vision (historical reference)
+- **`docs/DEVELOPMENT_GUIDE.md`** - Original dev guide (historical reference)
 
 ## License
 

@@ -2,7 +2,7 @@ import { Box, Typography, Paper, Container, Chip } from '@mui/material';
 import { motion } from 'framer-motion';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import StarIcon from '@mui/icons-material/Star';
-import { AvatarIcon } from '../../data/avatars';
+import { AvatarIcon } from '@data/avatars';
 
 /**
  * Componente de Ranking que muestra el Top 10 de un tema

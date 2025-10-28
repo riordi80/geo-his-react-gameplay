@@ -3,7 +3,7 @@ import { Box, Button, Typography, Paper, Container } from '@mui/material';
 import { motion } from 'framer-motion';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
-import { useSound } from '../../hooks/useSound';
+import { useSound } from '@shared/hooks';
 
 /**
  * Pantalla de feedback que muestra si la respuesta fue correcta o incorrecta
@@ -256,7 +256,7 @@ const FeedbackScreen = ({ isCorrect, question, onContinue, streak = 0 }) => {
                   transition: 'all 0.3s ease',
                 }}
               >
-                {buttonEnabled ? 'Siguiente pregunta' : `Espera ${countdown} segundos...`}
+                {buttonEnabled ? 'Siguiente pregunta' : `Cargando pregunta... (${countdown})`}
               </Button>
             </motion.div>
           </Paper>

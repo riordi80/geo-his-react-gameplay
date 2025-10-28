@@ -4,7 +4,7 @@ import { useGame, GAME_STATES } from '../../context/GameContext';
 import ProgressBar from '../ProgressBar';
 import FeedbackScreen from '../FeedbackScreen';
 import ResultsScreen from '../ResultsScreen';
-import { MultipleChoice, TrueFalse, FillBlanks, Matching, Classify } from '../Questions';
+import { MultipleChoice, TrueFalse, FillBlanks, Matching, Classify } from '../QuestionTypes';
 
 /**
  * Pantalla principal del juego

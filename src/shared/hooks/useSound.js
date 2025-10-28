@@ -8,6 +8,7 @@ export const useSound = () => {
   const audioContextRef = useRef(null);
   const musicIntervalRef = useRef(null);
   const musicGainRef = useRef(null);
+  const musicRepetitionsRef = useRef(0);
 
   /**
    * Obtiene o crea el contexto de audio
@@ -172,13 +173,16 @@ export const useSound = () => {
   }, [getAudioContext]);
 
   /**
-   * Inicia música de fondo estilo años 90
+   * Inicia música de fondo estilo años 90 (se repite 3 veces)
    */
   const playVictoryMusic = useCallback(() => {
     // Detener música anterior si existe
     if (musicIntervalRef.current) {
-      clearInterval(musicIntervalRef.current);
+      clearTimeout(musicIntervalRef.current);
     }
+
+    // Resetear contador de repeticiones
+    musicRepetitionsRef.current = 0;
 
     // Melodía victorias estilo años 90 - alegre y pegadiza
     const melody = [
@@ -208,15 +212,23 @@ export const useSound = () => {
         }, currentDelay);
         currentDelay += duration;
       });
+
+      // Incrementar contador
+      musicRepetitionsRef.current++;
+
+      // Si no hemos llegado a 3 repeticiones, programar la siguiente
+      if (musicRepetitionsRef.current < 3) {
+        musicIntervalRef.current = setTimeout(() => {
+          playMelodySequence();
+        }, totalDuration);
+      } else {
+        // Limpiar después de la tercera repetición
+        musicIntervalRef.current = null;
+      }
     };
 
     // Reproducir la melodía inicial inmediatamente
     playMelodySequence();
-
-    // Repetir la melodía en loop
-    musicIntervalRef.current = setInterval(() => {
-      playMelodySequence();
-    }, totalDuration);
   }, [getAudioContext, playMusicNote]);
 
   /**
@@ -224,9 +236,12 @@ export const useSound = () => {
    */
   const stopVictoryMusic = useCallback(() => {
     if (musicIntervalRef.current) {
-      clearInterval(musicIntervalRef.current);
+      clearTimeout(musicIntervalRef.current);
       musicIntervalRef.current = null;
     }
+
+    // Resetear contador
+    musicRepetitionsRef.current = 0;
 
     if (musicGainRef.current) {
       const ctx = getAudioContext();

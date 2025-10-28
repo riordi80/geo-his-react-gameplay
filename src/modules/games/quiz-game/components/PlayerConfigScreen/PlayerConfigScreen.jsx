@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { Box, TextField, Button, Typography, Container, Card } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useGame, GAME_STATES } from '../../context/GameContext';
-import avatars, { AvatarIcon } from '../../data/avatars';
+import avatars, { AvatarIcon } from '@data/avatars';
 import { tema2Questions } from '../../data/questions/tema2-relieve-terrestre';
-import { useSound } from '../../hooks/useSound';
+import { useSound } from '@shared/hooks';
 
 /**
  * Pantalla de configuración del jugador
