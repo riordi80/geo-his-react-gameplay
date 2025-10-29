@@ -1,5 +1,6 @@
 import { Box, Container } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useGame, GAME_STATES } from '../../context/GameContext';
 import ProgressBar from '../ProgressBar';
 import FeedbackScreen from '../FeedbackScreen';
@@ -11,6 +12,8 @@ import { MultipleChoice, TrueFalse, FillBlanks, Matching, Classify } from '../Qu
  * Gestiona el flujo completo del juego y renderiza el componente apropiado según el estado
  */
 const GameScreen = () => {
+  const navigate = useNavigate();
+  const { topicId } = useParams();
   const {
     gameState,
     currentQuestion,
@@ -66,10 +69,11 @@ const GameScreen = () => {
 
   /**
    * Maneja el click en "Salir"
+   * Navega al TopicHub del tema actual
    */
   const handleExit = () => {
     resetGame();
-    // Aquí podrías navegar a otra pantalla si tienes un router
+    navigate(`/topic/${topicId}`);
   };
 
   // Renderizar según el estado del juego
